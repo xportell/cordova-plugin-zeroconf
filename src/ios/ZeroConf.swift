@@ -395,7 +395,12 @@ import Foundation
 
         var txtRecord: [String: String] = [:]
         if let txtRecordData = netService.txtRecordData() {
-            let dict = NetService.dictionary(fromTXTRecord: txtRecordData)
+            //@WORKARROUND
+            let str = String(decoding: txtRecordData, as: UTF8.self)
+            let replaced = str.replacingOccurrences(of: "\u{3}TXT", with: "")
+            let fixData: Data! = replaced.data(using: .utf8)
+            
+            let dict = NetService.dictionary(fromTXTRecord: fixData)
             for (key, data) in dict {
                 txtRecord[key] = String(data: data, encoding:String.Encoding.utf8)
             }
